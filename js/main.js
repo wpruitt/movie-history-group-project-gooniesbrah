@@ -37,8 +37,8 @@ $("#find-new-movies").click(function(){
 		}
 		console.log("movie data", newMovieObj);
 		console.log("movie data", newMovieObj.cast[0]);
+		$(".movies").html(cardsTemplate(newMovieObj));
 	});
-	$(".movies").html(cardsTemplate(newMovieObj));
 
 	});
 });

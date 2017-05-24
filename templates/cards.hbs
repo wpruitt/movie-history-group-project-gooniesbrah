@@ -1,9 +1,6 @@
 <h2> {{title}}</h2>
-<p>{{overview}}</p>
 <p>{{release_date}}</p>
 <p> Starring </p>
-{{#if cast}}
-{{#each }}
+{{#each cast}}
  <p>{{name}} as {{character}}</p>
  {{/each}}
-{{/if}}
