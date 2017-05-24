@@ -5,9 +5,18 @@ console.log("MAIN.JS");
 let $ = require('jquery'),
     db = require("./db-interactions"),
 		Handlebars=require("hbsfy/runtime"),
-		cardsTemplate = require("../templates/cards.hbs"),
+		unwatchedcardsTemplate = require("../templates/unwatched-cards.hbs"),
+		watchedcardsTemplate = require("../templates/watched-cards.hbs"),
     // templates = require("./dom-builder"),
     user = require("./user");
+
+
+	var newMovieObj = {};
+
+
+
+
+
 
 $("#auth-btn").click(function(){
 	console.log("clicked on auth btn");
@@ -19,29 +28,37 @@ $("#auth-btn").click(function(){
   });
 });
 
+
+//When find new movies is clicked - get matching title from movie database and display on page
 $("#find-new-movies").click(function(){
-	var newMovieObj = {};
-	console.log("find new movies clicked");
+
 	var inputItem = $("#input").val();
-	console.log("inputItem", inputItem);
 	db.getMovie(inputItem)
 	.then(function(movieData){
-		console.log(movieData);
 		newMovieObj = movieData.results[0];
-	
-	db.getActors(newMovieObj.id)
-	.then(function(actors){
-		newMovieObj.cast = [];
-		for (var i=0; i<5;i++){
-			newMovieObj.cast.push(actors.cast[i]);
-		}
-		console.log("movie data", newMovieObj);
-		console.log("movie data", newMovieObj.cast[0]);
-		$(".movies").html(cardsTemplate(newMovieObj));
-	});
-
+		db.getActors(newMovieObj.id)
+		.then(function(actors){
+			newMovieObj.cast = [];
+			for (var i=0; i<5;i++){
+				newMovieObj.cast.push(actors.cast[i]);
+			}
+			newMovieObj.starValue = 0;
+			
+			$(".movies").html(unwatchedcardsTemplate(newMovieObj));
+		});
 	});
 });
+
+
+$(document).on("click", '.add-to-watchlist', function(event){
+	var userID = user.getUser();
+	db.pushToFirebaseArray(newMovieObj.id, userID);
+	db.pushToFirebase(newMovieObj, userID)
+	.then(function(response){
+		console.log(response);
+		});
+});
+
 
 $("#logout").click(function(){
   console.log("logout clicked");
