@@ -1,0 +1,9 @@
+<h2> {{title}}</h2>
+<p>{{overview}}</p>
+<p>{{release_date}}</p>
+<p> Starring </p>
+{{#if cast}}
+{{#each }}
+ <p>{{name}} as {{character}}</p>
+ {{/each}}
+{{/if}}
