@@ -3,7 +3,7 @@
 let firebase = require("firebase/app"),
 
     //fb calls the fb getter file. making fbData = fb() calls that javascript file
-    fb = require("./fb-getter"),
+    fb = require("./fbgetter"),
     fbData = fb();
 
 require("firebase/auth");
