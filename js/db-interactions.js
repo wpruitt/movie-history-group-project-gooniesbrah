@@ -27,8 +27,36 @@ function getActors(movieID) {
 	});
 }
 
+function pushToFirebase(movieObj, userID){
+	return new Promise(function(resolve, reject){
+		$.ajax({
+			url: `${firebase.getFBsettings().databaseURL}/${userID}/movies.json`,
+			type: "POST",
+			data: JSON.stringify(movieObj),
+			dataType: "json"
+		}).done(function(movieId){
+			resolve(movieId);
+		});
+	});
+}
+
+function pushToFirebaseArray(movieID, userID){
+	return new Promise(function(resolve, reject){
+		$.ajax({
+			url: `${firebase.getFBsettings().databaseURL}/${userID}/array.json`,
+			type: "POST",
+			data: JSON.stringify(movieID),
+			dataType: "json"
+		}).done(function(movieId){
+			resolve(movieId);
+		});
+	});
+}
+
 
 module.exports = {
 	getMovie,
-	getActors
+	getActors,
+	pushToFirebase,
+	pushToFirebaseArray
 };

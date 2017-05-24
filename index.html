@@ -7,21 +7,32 @@
 </head>
 <body>
 	<div class="container">
-	<div class="row">
-		<input type="text" class="col-md-5" id="input">
-	</div>
-	<nav class="navbar row"><a href="#" id="find-new-movies">Find New Movies</a><a href="#" id="auth-btn">Login</a>
-	</nav>
-	<div class="row">
-		<h1 class="col-md-4">Movie History</h1>
-	</div>
-	<div class="movies row"></div>
+
+		<nav class="navbar row">
+			<label>Search: </label>
+			<input type="text" class="col-md-5" id="input">
+			<a href="#" id="auth-btn">Login</a>
+		</nav>
+
+		<div class="row">
+			<h1 class="col-md-4">Movie History</h1>
+			<p class="col-md-4 align-middle text-center">Breadcrumbs eventurally</p>
+		</div>
+
+		<div class="row">
+			<p class ="col-md-2 text-center align-middle" id="find-new-movies">Show Untracked<p>
+			<p class ="col-md-2 text-center align-middle" id="show-unwatched-movies">Show Unwatched<p>
+			<p class ="col-md-2 text-center align-middle" id="show-watched-movies">Show Watched<p>
+			<p class ="col-md-2 text-center align-middle" id="show-favorite-movies">Show Favorites<p>
+		</div>
+
+		<div class="movies row"></div>
+
+	
+	
 
 
-
-
-
-
+	</div>  <!--End Container-->
 <script src="lib/node_modules/jquery/dist/jquery.js"></script>
 <script src="lib/node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script src="dist/app.js"></script>
