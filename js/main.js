@@ -2,6 +2,7 @@
 
 console.log("MAIN.JS");
 
+
 let $ = require('jquery'),
     db = require("./db-interactions"),
 		Handlebars=require("hbsfy/runtime"),
@@ -9,6 +10,8 @@ let $ = require('jquery'),
 		watchedcardsTemplate = require("../templates/watched-cards.hbs"),
     // templates = require("./dom-builder"),
     user = require("./user");
+require("bootstrap");
+require("bootstrap-star-rating");
 
 
 	var newMovieObj = {};
@@ -28,13 +31,15 @@ $("#auth-btn").click(function(){
   });
 });
 
-
+// Tamela added focus, empty and breadcrumbs
 //When find new movies is clicked - get matching title from movie database and display on page
 $("#find-new-movies").click(function(){
+//    $(".toggle-buttons").toggle("toggle-selected");
     $("#input").focus();
     $(".movies").empty();
     let breadcrumbs = "< Search Results";
     $("#bread-crumbs").text(breadcrumbs);
+
 	var inputItem = $("#input").val();
 	db.getMovie(inputItem)
 	.then(function(movieData){
@@ -71,10 +76,12 @@ $("#logout").click(function(){
 });
 
 
+///Tam..buttons do not toggle color yet, pulls a list of movies added to watchlist
 $("#show-unwatched-movies").click((event) =>{
     let breadcrumbs = "< Search Results/Unwatched";
     $("#bread-crumbs").text(breadcrumbs);
     $("#input").val("");
+//    $(".toggle-buttons").toggle("toggle-selected");
     let userID = user.getUser();
     console.log("Checking user ID", userID);
     db.pullWatchFromFirebase(userID)
@@ -86,7 +93,7 @@ $("#show-unwatched-movies").click((event) =>{
 
 });
 
-
+//Tam....empties Dom so only Watchlist will display, set FB unique ID to a var and passed it as an arg//did npm install of bootstrap dependency for stars
 function displayWatchList (watchObj) {
     $("#input").val("");
     $(".movies").empty();
@@ -96,11 +103,21 @@ function displayWatchList (watchObj) {
             newMovieObj.key = key;
             $(".movies").append(watchedcardsTemplate(newMovieObj));
         }
+    $(".rating").rating({stars: 10, step: 1, min: 0, max: 10});
+    $(".rating").on('rating.change', function(event, value, caption) {
+        let currentStarID = event.currentTarget.id;
+        let starObj = {
+            starValue: value
+        };
+        db.updateStars(currentStarID, starObj);
+//        console.log(value);
+//        console.log(caption);
+    });
 }
 
 
 
-
+//Tam...removed watched movie card from page but does not currently remove from FB
 $(document).on("click", '.watch-list-delete', function(event){
     let firebaseKey = event.currentTarget.parentElement.id;
     console.log("which key is being deleted" + firebaseKey);

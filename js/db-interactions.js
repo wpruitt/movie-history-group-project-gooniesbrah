@@ -64,7 +64,7 @@ function pullWatchFromFirebase(userID){
 		});
 	});
 }
-
+//not deleting yet
 function deleteWatchedMovie(firebaseKey) {
     return new Promise (function(resolve, reject){
         $.ajax({
@@ -72,6 +72,19 @@ function deleteWatchedMovie(firebaseKey) {
             method: "DELETE"
         }).done(function(){
             resolve();
+        });
+    });
+}
+//not updating to FB
+function updateStars(firebaseKey, starValue) {
+    return new Promise (function(resolve, reject){
+        $.ajax({
+            url: `${firebase.getFBsettings().databaseURL}/movies/${firebaseKey}.json`,
+            type: "PATCH",
+            data: JSON.stringify(starValue)
+        }).done(function(data){
+            console.log("did this resolve");
+            resolve(data);
         });
     });
 }
@@ -83,5 +96,6 @@ module.exports = {
 	pushToFirebase,
 	pushToFirebaseArray,
     pullWatchFromFirebase,
-    deleteWatchedMovie
+    deleteWatchedMovie,
+    updateStars
 };
