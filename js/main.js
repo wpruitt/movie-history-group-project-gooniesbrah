@@ -33,30 +33,91 @@ $("#auth-btn").click(function(){
 
 // Tamela added focus, empty and breadcrumbs
 //When find new movies is clicked - get matching title from movie database and display on page
+//$("#find-new-movies").click(function(){
+////    $(".toggle-buttons").toggle("toggle-selected");
+//    $("#input").focus();
+//    $(".movies").empty();
+//    let breadcrumbs = "< Search Results";
+//    $("#bread-crumbs").text(breadcrumbs);
+//
+//	var inputItem = $("#input").val();
+//	db.getMovie(inputItem)
+//	.then(function(movieData){
+//
+//		newMovieObj.results = movieData.results;
+//		db.getActors(newMovieObj.id)
+//		.then(function(actors){
+//			newMovieObj.cast = [];
+//			for (var i=0; i<5;i++){
+//				newMovieObj.cast.push(actors.cast[i]);
+//			}
+//			newMovieObj.starValue = 0;
+//
+//			$(".movies").html(unwatchedcardsTemplate(newMovieObj));
+//		});
+//	});
+//});
+
+var addToWatchList = function(movieElementArray, event){
+    console.log("movieElementArray", movieElementArray);
+    var userID = user.getUser();
+    var movieTitle = event.target.closest("div").querySelector(".movie-title").innerHTML;
+    var titleToPush = {};
+    movieElementArray.forEach(function(movie){
+        if(movieTitle === movie.title){
+            titleToPush = movie;
+        }
+    });
+    console.log("titleToPush", titleToPush);
+    db.pushToFirebaseArray(titleToPush, userID);
+    db.pushToFirebase(titleToPush, userID)
+    .then(function(response){
+        console.log(response);
+        });
+};
+
 $("#find-new-movies").click(function(){
-//    $(".toggle-buttons").toggle("toggle-selected");
+//    $(“.toggle-buttons”).toggle(“toggle-selected”);
     $("#input").focus();
     $(".movies").empty();
     let breadcrumbs = "< Search Results";
     $("#bread-crumbs").text(breadcrumbs);
 
-	var inputItem = $("#input").val();
-	db.getMovie(inputItem)
-	.then(function(movieData){
+    var inputItem = $("#input").val();
+    db.getMovie(inputItem)
+    .then(function(movieData){
 
-		newMovieObj = movieData.results[0];
-		db.getActors(newMovieObj.id)
-		.then(function(actors){
-			newMovieObj.cast = [];
-			for (var i=0; i<5;i++){
-				newMovieObj.cast.push(actors.cast[i]);
-			}
-			newMovieObj.starValue = 0;
-
-			$(".movies").html(unwatchedcardsTemplate(newMovieObj));
-		});
-	});
+        newMovieObj.results = movieData.results;
+        getActors(newMovieObj);
+    });
 });
+
+
+
+var getActors = function(movieObj){
+    var movieElementArray = [];
+    movieObj.results.forEach(function(element){
+        movieElementArray.push(element);
+        element.cast = [];
+            db.getActors(element.id)
+            .then(function(actors){
+                if(actors.cast.length > 5){
+                    for(var i=0;i<5;i++){
+                        element.cast.push(actors.cast[i]);
+                    }
+                }else if (actors.cast.length < 5){
+                    for(var j=0;j<actors.cast.length;j++){
+                        element.cast.push(actors.cast[j]);
+                    }
+                }
+                element.starValue = 0;
+            $(".movies").append(unwatchedcardsTemplate(element));
+            });
+        });
+        $(document).on("click", ".add-to-watchlist", function(){
+                addToWatchList(movieElementArray, event);
+    });
+};
 
 
 $(document).on("click", '.add-to-watchlist', function(event){
