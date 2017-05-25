@@ -109,7 +109,8 @@ function displayWatchList (watchObj) {
         let starObj = {
             starValue: value
         };
-        db.updateStars(currentStarID, starObj);
+        let currentUser = user.getUser();
+        db.updateStars(currentStarID, starObj, currentUser);
 //        console.log(value);
 //        console.log(caption);
     });
@@ -117,12 +118,13 @@ function displayWatchList (watchObj) {
 
 
 
-//Tam...removed watched movie card from page but does not currently remove from FB
+//Tam...removed watched movie card from page
 $(document).on("click", '.watch-list-delete', function(event){
     let firebaseKey = event.currentTarget.parentElement.id;
     console.log("which key is being deleted" + firebaseKey);
     let deleteButton = event.currentTarget.parentElement;
-    db.deleteWatchedMovie(firebaseKey);
+    let currentUser = user.getUser();
+    db.deleteWatchedMovie(firebaseKey, currentUser);
     deleteButton.remove();
 });
 
