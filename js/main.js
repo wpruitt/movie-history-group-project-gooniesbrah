@@ -86,7 +86,7 @@ $("#find-new-movies").click(function(){
     var inputItem = $("#input").val();
     db.getMovie(inputItem)
     .then(function(movieData){
-
+    	console.log("hi", movieData);
         newMovieObj.results = movieData.results;
         getActors(newMovieObj);
     });

@@ -28,6 +28,7 @@ function getActors(movieID) {
 }
 
 function pushToFirebase(movieObj, userID){
+	console.log("pwFB", movieObj[0]);
 	return new Promise(function(resolve, reject){
 		$.ajax({
 			url: `${firebase.getFBsettings().databaseURL}/${userID}/movies/.json`,
