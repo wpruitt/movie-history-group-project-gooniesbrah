@@ -61,7 +61,9 @@ $("#auth-btn").click(function(){
 var addToWatchList = function(movieElementArray, event){
     console.log("movieElementArray", movieElementArray);
     var userID = user.getUser();
-    var movieTitle = event.target.closest("div").querySelector(".movie-title").innerHTML;
+    console.log(event.target.parentNode.firstElementChild.firstChild.nodeValue);
+    var movieTitle = event.target.parentNode.firstElementChild.firstChild.nodeValue;
+	console.log("movieTitle", movieTitle);
     var titleToPush = {};
     movieElementArray.forEach(function(movie){
         if(movieTitle === movie.title){
