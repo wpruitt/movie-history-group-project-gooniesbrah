@@ -31,10 +31,14 @@ $("#auth-btn").click(function(){
 
 //When find new movies is clicked - get matching title from movie database and display on page
 $("#find-new-movies").click(function(){
-
+    $("#input").focus();
+    $(".movies").empty();
+    let breadcrumbs = "< Search Results";
+    $("#bread-crumbs").text(breadcrumbs);
 	var inputItem = $("#input").val();
 	db.getMovie(inputItem)
 	.then(function(movieData){
+
 		newMovieObj = movieData.results[0];
 		db.getActors(newMovieObj.id)
 		.then(function(actors){
@@ -43,7 +47,7 @@ $("#find-new-movies").click(function(){
 				newMovieObj.cast.push(actors.cast[i]);
 			}
 			newMovieObj.starValue = 0;
-			
+
 			$(".movies").html(unwatchedcardsTemplate(newMovieObj));
 		});
 	});
@@ -51,7 +55,8 @@ $("#find-new-movies").click(function(){
 
 
 $(document).on("click", '.add-to-watchlist', function(event){
-	var userID = user.getUser();
+
+    var userID = user.getUser();
 	db.pushToFirebaseArray(newMovieObj.id, userID);
 	db.pushToFirebase(newMovieObj, userID)
 	.then(function(response){
@@ -64,3 +69,51 @@ $("#logout").click(function(){
   console.log("logout clicked");
   user.logOut();
 });
+
+
+$("#show-unwatched-movies").click((event) =>{
+    let breadcrumbs = "< Search Results/Unwatched";
+    $("#bread-crumbs").text(breadcrumbs);
+    $("#input").val("");
+    let userID = user.getUser();
+    console.log("Checking user ID", userID);
+    db.pullWatchFromFirebase(userID)
+    .then((data) =>{
+        displayWatchList(data);
+
+    });
+//    .prop('disabled', true)......don't think we need to disable
+
+});
+
+
+function displayWatchList (watchObj) {
+    $("#input").val("");
+    $(".movies").empty();
+     for (let key in watchObj) {
+//            console.log("is this a key?" + data[key].title);
+            let newMovieObj = watchObj[key];
+            newMovieObj.key = key;
+            $(".movies").append(watchedcardsTemplate(newMovieObj));
+        }
+}
+
+
+
+
+$(document).on("click", '.watch-list-delete', function(event){
+    let firebaseKey = event.currentTarget.parentElement.id;
+    console.log("which key is being deleted" + firebaseKey);
+    let deleteButton = event.currentTarget.parentElement;
+    db.deleteWatchedMovie(firebaseKey);
+    deleteButton.remove();
+});
+
+
+
+
+
+
+
+
+
