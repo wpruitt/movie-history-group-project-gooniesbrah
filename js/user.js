@@ -11,9 +11,9 @@ function logOut(){
     return firebase.auth().signOut();
 }
 
-function setUser(val){
-    currentUser = val;
-}
+// function setUser(val){
+//     currentUser = val;
+// }
 
 function getUser(){
     return currentUser;
@@ -32,5 +32,5 @@ firebase.auth().onAuthStateChanged(function(user){
 module.exports =
 {logInGoogle,
 logOut,
-setUser,
+// setUser,
 getUser};

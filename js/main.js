@@ -2,6 +2,7 @@
 
 console.log("MAIN.JS");
 
+
 let $ = require('jquery'),
     db = require("./db-interactions"),
 		Handlebars=require("hbsfy/runtime"),
@@ -23,7 +24,7 @@ $("#auth-btn").click(function(){
   	user.logInGoogle()
   	.then(function(result){
     console.log("result from Login", result.user.uid);
-    user.setUser(result.user.uid);
+    // user.setUser(result.user.uid);//this is not needed
     // loadUserMovies();
   });
 });
@@ -35,7 +36,7 @@ $("#find-new-movies").click(function(){
 	var inputItem = $("#input").val();
 	db.getMovie(inputItem)
 	.then(function(movieData){
-		newMovieObj = movieData.results[0];
+		newMovieObj = movieData.results[0];//make this a loop so that all movies returned get a newMovieObj
 		db.getActors(newMovieObj.id)
 		.then(function(actors){
 			newMovieObj.cast = [];
@@ -43,7 +44,7 @@ $("#find-new-movies").click(function(){
 				newMovieObj.cast.push(actors.cast[i]);
 			}
 			newMovieObj.starValue = 0;
-			
+
 			$(".movies").html(unwatchedcardsTemplate(newMovieObj));
 		});
 	});
