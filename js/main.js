@@ -102,10 +102,12 @@ function displayWatchList (watchObj) {
             let newMovieObj = watchObj[key];
             newMovieObj.key = key;
             $(".movies").append(watchedcardsTemplate(newMovieObj));
+            $("#star--" + key).rating({stars: 10, step: 1, min: 0, max: 10});
+            $("#star--" + key).rating('update', newMovieObj.starValue);
         }
-    $(".rating").rating({stars: 10, step: 1, min: 0, max: 10});
+
     $(".rating").on('rating.change', function(event, value, caption) {
-        let currentStarID = event.currentTarget.id;
+        let currentStarID = event.currentTarget.id.replace("star--", ""); // chop off letters
         let starObj = {
             starValue: value
         };
