@@ -4,7 +4,6 @@ console.log("MAIN.JS");
 
 
 let $ = require('jquery'),
-    _ = require('lodash'),
     db = require("./db-interactions"),
 		Handlebars=require("hbsfy/runtime"),
 		unwatchedcardsTemplate = require("../templates/unwatched-cards.hbs"),
