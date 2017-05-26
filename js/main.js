@@ -4,6 +4,7 @@ console.log("MAIN.JS");
 
 
 let $ = require('jquery'),
+    _ = require('lodash'),
     db = require("./db-interactions"),
 		Handlebars=require("hbsfy/runtime"),
 		unwatchedcardsTemplate = require("../templates/unwatched-cards.hbs"),
@@ -89,12 +90,18 @@ var addToWatchList = function(event){
     var userID = user.getUser();
     let movieObj = {
         title: $(event.target).siblings(".title").html(),
-        image: $(event.target).siblings(".poster").html(),
-        actors: $(event.target).siblings(".actors").html(),
-        overview: $(event.target).siblings(".title").html(),
+        image: $(event.target).siblings("img").attr("src"),
+        overview: $(event.target).siblings(".overview").html(),
         release: $(event.target).siblings(".release").html()
     };
+    let array = [];
+    $(event.target).siblings(".actors").each(function(index, currVal){
+        // console.log("currVal", currVal);
+        array.push($(currVal).text());
+    });
+    movieObj.actors = array;
     console.log("movieObj", movieObj);
+    // console.log("image", $(event.target).siblings("img").attr("src");
     // var titleToPush = _.filter(movieElementArray, {'title': movieTitle});
     // db.pushToFirebaseArray(titleToPush, userID);//does this need a .then since it is calling a Promise?
     db.pushToFirebase(movieObj, userID)
@@ -182,6 +189,7 @@ $("#show-unwatched-movies").click((event) =>{
     console.log("Checking user ID", userID);
     db.pullWatchFromFirebase(userID)
     .then((data) =>{
+      console.log("unwatched data", data);
         displayWatchList(data);
 
     });
@@ -197,6 +205,7 @@ function displayWatchList (watchObj) {
 //            console.log("is this a key?" + data[key].title);
             let newMovieObj = watchObj[key];
             newMovieObj.key = key;
+            console.log("newMovieObj", newMovieObj);
             $(".movies").append(watchedcardsTemplate(newMovieObj));
             $("#star--" + key).rating({stars: 10, step: 1, min: 0, max: 10});
             $("#star--" + key).rating('update', newMovieObj.starValue);
@@ -214,6 +223,31 @@ function displayWatchList (watchObj) {
     });
 }
 
+function displayRatedMovies(rated) {
+  let newObj = _.filter(rated, 'starValue');
+  for (let key in newObj) {
+//            console.log("is this a key?" + data[key].title);
+         let newMovieObj = newObj[key];
+         newMovieObj.key = key;
+         console.log(newMovieObj);
+         $(".movies").append(watchedcardsTemplate(newMovieObj));
+         $("#star--" + key).rating({stars: 10, step: 1, min: 0, max: 10});
+         $("#star--" + key).rating('update', newMovieObj.starValue);
+     }
+}
+
+$("#show-watched-movies").click((event) =>{
+  $(".movies").empty();
+  let breadcrumbs = "< Search Results/Watched";
+  $("#bread-crumbs").text(breadcrumbs);
+  $("#input").val("");
+  let userID = user.getUser();
+  console.log("Checking user ID", userID);
+  db.pullWatchFromFirebase(userID)
+  .then((data) =>{
+  displayRatedMovies(data);
+});
+});
 
 
 //Tam...removed watched movie card from page
@@ -225,12 +259,3 @@ $(document).on("click", '.watch-list-delete', function(event){
     db.deleteWatchedMovie(firebaseKey, currentUser);
     deleteButton.remove();
 });
-
-
-
-
-
-
-
-
-
