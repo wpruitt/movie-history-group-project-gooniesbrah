@@ -59,19 +59,24 @@ $("#auth-btn").click(function(){
 //});
 
 var addToWatchList = function(movieElementArray, event){
+	//function to add searched movies to watchlist
     console.log("movieElementArray", movieElementArray);
     var userID = user.getUser();
     console.log(event.target.parentNode.firstElementChild.firstChild.nodeValue);
     var movieTitle = event.target.parentNode.firstElementChild.firstChild.nodeValue;
+    //grabs movie title from clicked card
 	console.log("movieTitle", movieTitle);
     var titleToPush = {};
     movieElementArray.forEach(function(movie){
         if(movieTitle === movie.title){
+        	//compares title pulled from card to array of searched movies?
             titleToPush = movie;
+            //takes matched movie object and assigns it to var
         }
     });
     console.log("titleToPush", titleToPush);
     db.pushToFirebaseArray(titleToPush, userID);
+    //should this call both functions?
     db.pushToFirebase(titleToPush, userID)
     .then(function(response){
         console.log(response);
@@ -79,6 +84,8 @@ var addToWatchList = function(movieElementArray, event){
 };
 
 $("#find-new-movies").click(function(){
+	//on button press take value of user input and search api send to getMovie
+	//
 //    $(“.toggle-buttons”).toggle(“toggle-selected”);
     $("#input").focus();
     $(".movies").empty();
@@ -87,9 +94,12 @@ $("#find-new-movies").click(function(){
 
     var inputItem = $("#input").val();
     db.getMovie(inputItem)
+    //
     .then(function(movieData){
     	console.log("hi", movieData);
+    	console.log("yo", newMovieObj);
         newMovieObj.results = movieData.results;
+        //what does newMovieObj equal now and prior to?
         getActors(newMovieObj);
     });
 });
