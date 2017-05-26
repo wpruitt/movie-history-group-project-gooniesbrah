@@ -4,6 +4,7 @@ console.log("MAIN.JS");
 
 
 let $ = require('jquery'),
+    _ = require('lodash'),
     db = require("./db-interactions"),
 		Handlebars=require("hbsfy/runtime"),
 		unwatchedcardsTemplate = require("../templates/unwatched-cards.hbs"),
@@ -222,6 +223,7 @@ function displayRatedMovies(rated) {
 //            console.log("is this a key?" + data[key].title);
          let newMovieObj = newObj[key];
          newMovieObj.key = key;
+         console.log(newMovieObj);
          $(".movies").append(watchedcardsTemplate(newMovieObj));
          $("#star--" + key).rating({stars: 10, step: 1, min: 0, max: 10});
          $("#star--" + key).rating('update', newMovieObj.starValue);
