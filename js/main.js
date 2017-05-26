@@ -89,12 +89,18 @@ var addToWatchList = function(event){
     var userID = user.getUser();
     let movieObj = {
         title: $(event.target).siblings(".title").html(),
-        image: $(event.target).siblings(".poster").html(),
-        actors: $(event.target).siblings(".actors").html(),
-        overview: $(event.target).siblings(".title").html(),
+        image: $(event.target).siblings("img").attr("src"),
+        overview: $(event.target).siblings(".overview").html(),
         release: $(event.target).siblings(".release").html()
     };
+    let array = [];
+    $(event.target).siblings(".actors").each(function(index, currVal){
+        // console.log("currVal", currVal);
+        array.push($(currVal).text());
+    });
+    movieObj.actors = array;
     console.log("movieObj", movieObj);
+    // console.log("image", $(event.target).siblings("img").attr("src");
     // var titleToPush = _.filter(movieElementArray, {'title': movieTitle});
     // db.pushToFirebaseArray(titleToPush, userID);//does this need a .then since it is calling a Promise?
     db.pushToFirebase(movieObj, userID)
@@ -197,6 +203,7 @@ function displayWatchList (watchObj) {
 //            console.log("is this a key?" + data[key].title);
             let newMovieObj = watchObj[key];
             newMovieObj.key = key;
+            console.log("newMovieObj", newMovieObj);
             $(".movies").append(watchedcardsTemplate(newMovieObj));
             $("#star--" + key).rating({stars: 10, step: 1, min: 0, max: 10});
             $("#star--" + key).rating('update', newMovieObj.starValue);

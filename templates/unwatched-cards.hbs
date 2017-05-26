@@ -10,12 +10,12 @@
 
 <div>
    <h2 class="title">{{title}}</h2>
-   <p class="poster"><img src="https://image.tmdb.org/t/p/w500/{{poster_path}}"></p>
+   <img class="poster" src="https://image.tmdb.org/t/p/w500{{poster_path}}">
    <h5 class="overview">{{overview}}</h5>
    <p class="release">{{release_date}}</p>
    <p> Starring </p>
    {{#each cast}}
    <p class="actors">{{name}} as {{character}}</p>
-   {{/each}}
+   {{/each}}</span>
 <button class="add-to-watchlist">Add To Watchlist</button>
 </div>
