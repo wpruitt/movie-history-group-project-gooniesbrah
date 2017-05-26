@@ -15,17 +15,25 @@
 			<a href="#" id="auth-btn">Login</a>
 		</nav>
 
-		<div class="row">
+<!-- 		<div class="row">
 			<h1 class="col-md-4">Movie History</h1>
 			<p class="col-md-4 align-middle text-center" id="bread-crumbs"></p>
-		</div>
+		</div> -->
+		<h1 class="navbar-text">Movie History</h1>
+		<h2 class="navbar-text" id="bread-crumbs"></h2>
 
 		<div class="row">
-            <p class ="col-md-2 text-center align-middle toggle-butt" id="find-new-movies">Show Untracked</p>
-            <p class ="col-md-2 text-center align-middle toggle-butt" id="show-unwatched-movies">Show Unwatched</p>
-            <p class ="col-md-2 text-center align-middle toggle-butt" id="show-watched-movies">Show Watched</p>
-            <p class ="col-md-2 text-center align-middle toggle-butt" id="show-favorite-movies">Show Favorites</p>
+            <!-- <p class ="col-md-2 text-center align-middle toggle-butt" id="find-new-movies">Show Untracked</p> -->
+            <!-- <p class ="col-md-2 text-center align-middle toggle-butt" id="show-unwatched-movies">Show Unwatched</p> -->
+            <!-- <p class ="col-md-2 text-center align-middle toggle-butt" id="show-watched-movies">Show Watched</p> -->
+            <!-- <p class ="col-md-2 text-center align-middle toggle-butt" id="show-favorite-movies">Show Favorites</p> -->
 		</div>
+		<div class="btn-group" role="group" aria-label="...">
+		  <button type="button" class="btn btn-default" id="find-new-movies">Show Untracked</button>
+		  <button type="button" class="btn btn-default" id="show-unwatched-movies">Show Unwatched</button>
+		  <button type="button" class="btn btn-default" id="show-watched-movies">Show Watched</button>
+		  <button type="button" class="btn btn-default" id="show-favorite-movies">Favorites</button>
+</div>
 
 		<div class="movies row"></div>
 
@@ -35,7 +43,7 @@
 
 	</div>  <!--End Container-->
 <script src="lib/node_modules/jquery/dist/jquery.js"></script>
-<!--<script src="lib/node_modules/bootstrap/dist/js/bootstrap.js"></script>-->
+<script src="lib/node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script src="dist/app.js"></script>
 </body>
 </html>
