@@ -24,14 +24,20 @@ var newMovieObj = {};
 
 
 $("#auth-btn").click(function(){
-	console.log("clicked on auth btn");
-  	user.logInGoogle()
+	console.log("clicked on auth btn", user.getUser());
+  	user.logOut()
   	.then(function(result){
     console.log("result from Login", result.user.uid);
-    user.setUser(result.user.uid);
+    // user.setUser(result.user.uid);
     // loadUserMovies();
   });
 });
+  	if (user.getUser() = null){
+    $("#auth-btn").innerHTML = "Login";
+}else{
+    $("#auth-btn").innerHTML = "Logout";
+}
+
 
 // Tamela added focus, empty and breadcrumbs
 //When find new movies is clicked - get matching title from movie database and display on page
@@ -200,7 +206,10 @@ $("#show-unwatched-movies").click((event) =>{
 function displayWatchList (watchObj) {
     $("#input").val("");
     $(".movies").empty();
+    console.log("dWL", watchObj);
      for (let key in watchObj) {
+     	if (!watchObj[key].hasOwnProperty('starValue')){
+     	console.log("wObjKey", watchObj[key]);
 //            console.log("is this a key?" + data[key].title);
             let newMovieObj = watchObj[key];
             newMovieObj.key = key;
@@ -209,6 +218,7 @@ function displayWatchList (watchObj) {
             $("#star--" + key).rating({stars: 10, step: 1, min: 0, max: 10});
             $("#star--" + key).rating('update', newMovieObj.starValue);
         }
+}
 
     $(".rating").on('rating.change', function(event, value, caption) {
         let currentStarID = event.currentTarget.id.replace("star--", ""); // chop off letters
@@ -223,6 +233,7 @@ function displayWatchList (watchObj) {
 }
 
 function displayRatedMovies(rated) {
+	console.log("dRM", rated);
   let newObj = _.filter(rated, 'starValue');
   for (let key in newObj) {
 //            console.log("is this a key?" + data[key].title);
