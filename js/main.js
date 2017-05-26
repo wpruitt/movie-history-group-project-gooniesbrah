@@ -4,6 +4,7 @@ console.log("MAIN.JS");
 
 
 let $ = require('jquery'),
+    _ = require('lodash'),
     db = require("./db-interactions"),
 		Handlebars=require("hbsfy/runtime"),
 		unwatchedcardsTemplate = require("../templates/unwatched-cards.hbs"),
@@ -64,11 +65,11 @@ var addToWatchList = function(movieElementArray, event){
     var movieTitle = event.target.closest("div").querySelector(".movie-title").innerHTML;
     var titleToPush = {};
     movieElementArray.forEach(function(movie){
-        if(movieTitle === movie.title){
+        if(movieTitle == movie.title){
             titleToPush = movie;
+            console.log("titleToPush", titleToPush);
         }
     });
-    console.log("titleToPush", titleToPush);
     db.pushToFirebaseArray(titleToPush, userID);
     db.pushToFirebase(titleToPush, userID)
     .then(function(response){
@@ -120,15 +121,14 @@ var getActors = function(movieObj){
 };
 
 
-$(document).on("click", '.add-to-watchlist', function(event){
-
-    var userID = user.getUser();
-	db.pushToFirebaseArray(newMovieObj.id, userID);
-	db.pushToFirebase(newMovieObj, userID)
-	.then(function(response){
-		console.log(response);
-		});
-});
+// $(document).on("click", '.add-to-watchlist', function(event){
+//   var userID = user.getUser();
+// 	db.pushToFirebaseArray(newMovieObj.id, userID);
+// 	db.pushToFirebase(newMovieObj, userID)
+// 	.then(function(response){
+// 		console.log(response);
+// 		});
+// });
 
 
 $("#logout").click(function(){
@@ -162,6 +162,7 @@ function displayWatchList (watchObj) {
 //            console.log("is this a key?" + data[key].title);
             let newMovieObj = watchObj[key];
             newMovieObj.key = key;
+            console.log("newMovieObj", newMovieObj);
             $(".movies").append(watchedcardsTemplate(newMovieObj));
             $("#star--" + key).rating({stars: 10, step: 1, min: 0, max: 10});
             $("#star--" + key).rating('update', newMovieObj.starValue);
@@ -179,6 +180,31 @@ function displayWatchList (watchObj) {
     });
 }
 
+function displayRatedMovies(rated) {
+  let newObj = _.filter(rated, 'starValue');
+  for (let key in newObj) {
+//            console.log("is this a key?" + data[key].title);
+         let newMovieObj = newObj[key];
+         newMovieObj.key = key;
+         console.log(newMovieObj);
+         $(".movies").append(watchedcardsTemplate(newMovieObj));
+         $("#star--" + key).rating({stars: 10, step: 1, min: 0, max: 10});
+         $("#star--" + key).rating('update', newMovieObj.starValue);
+     }
+}
+
+$("#show-watched-movies").click((event) =>{
+  $(".movies").empty();
+  let breadcrumbs = "< Search Results/Watched";
+  $("#bread-crumbs").text(breadcrumbs);
+  $("#input").val("");
+  let userID = user.getUser();
+  console.log("Checking user ID", userID);
+  db.pullWatchFromFirebase(userID)
+  .then((data) =>{
+  displayRatedMovies(data);
+});
+});
 
 
 //Tam...removed watched movie card from page
@@ -190,12 +216,3 @@ $(document).on("click", '.watch-list-delete', function(event){
     db.deleteWatchedMovie(firebaseKey, currentUser);
     deleteButton.remove();
 });
-
-
-
-
-
-
-
-
-
