@@ -67,10 +67,10 @@ var addToWatchList = function(movieElementArray, event){
     movieElementArray.forEach(function(movie){
         if(movieTitle == movie.title){
             titleToPush = movie;
-            console.log("titleToPush", titleToPush);
         }
     });
-    db.pushToFirebaseArray(titleToPush, userID);
+    console.log("titleToPush", titleToPush);
+    db.pushToFirebaseArray(titleToPush.id, userID);
     db.pushToFirebase(titleToPush, userID)
     .then(function(response){
         console.log(response);

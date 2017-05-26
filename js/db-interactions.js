@@ -34,8 +34,8 @@ function pushToFirebase(movieObj, userID){
 			type: "POST",
 			data: JSON.stringify(movieObj),
 			dataType: "json"
-		}).done(function(movieId){
-			resolve(movieId);
+		}).done(function(movieObj){
+			resolve(movieObj);
 		});
 	});
 }
@@ -47,8 +47,8 @@ function pushToFirebaseArray(movieID, userID){
 			type: "POST",
 			data: JSON.stringify(movieID),
 			dataType: "json"
-		}).done(function(movieId){
-			resolve(movieId);
+		}).done(function(movieID){
+			resolve(movieID);
 		});
 	});
 }
