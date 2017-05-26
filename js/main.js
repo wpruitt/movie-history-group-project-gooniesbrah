@@ -9,12 +9,14 @@ let $ = require('jquery'),
 		unwatchedcardsTemplate = require("../templates/unwatched-cards.hbs"),
 		watchedcardsTemplate = require("../templates/watched-cards.hbs"),
     // templates = require("./dom-builder"),
-    user = require("./user");
+    user = require("./user"),
+    _ = require('lodash');
+
 require("bootstrap");
 require("bootstrap-star-rating");
 
 
-	var newMovieObj = {};
+var newMovieObj = {};
 
 
 
@@ -58,30 +60,49 @@ $("#auth-btn").click(function(){
 //	});
 //});
 
-var addToWatchList = function(movieElementArray, event){
-	//function to add searched movies to watchlist
-    console.log("movieElementArray", movieElementArray);
+// var addToWatchList = function(movieElementArray, event){
+// 	//function to add searched movies to watchlist
+//     console.log("movieElementArray", movieElementArray);
+//     var userID = user.getUser();
+//     console.log(event.target.parentNode.firstElementChild.firstChild.nodeValue);
+//     var movieTitle = event.target.parentNode.firstElementChild.firstChild.nodeValue;
+//     //grabs movie title from clicked card
+// 	console.log("movieTitle", movieTitle);
+//     var titleToPush = {};
+//     movieElementArray.forEach(function(movie){
+//         if(movieTitle === movie.title){
+//         	//compares title pulled from card to array of searched movies?
+//             titleToPush = movie;
+//             //takes matched movie object and assigns it to var
+//         }
+//     });
+//     console.log("titleToPush", titleToPush);
+//     db.pushToFirebaseArray(titleToPush, userID);
+//     //should this call both functions?
+//     db.pushToFirebase(titleToPush, userID)
+//     .then(function(response){
+//         console.log(response);
+//         });
+// };
+
+var addToWatchList = function(event){
     var userID = user.getUser();
-    console.log(event.target.parentNode.firstElementChild.firstChild.nodeValue);
-    var movieTitle = event.target.parentNode.firstElementChild.firstChild.nodeValue;
-    //grabs movie title from clicked card
-	console.log("movieTitle", movieTitle);
-    var titleToPush = {};
-    movieElementArray.forEach(function(movie){
-        if(movieTitle === movie.title){
-        	//compares title pulled from card to array of searched movies?
-            titleToPush = movie;
-            //takes matched movie object and assigns it to var
-        }
-    });
-    console.log("titleToPush", titleToPush);
-    db.pushToFirebaseArray(titleToPush, userID);
-    //should this call both functions?
-    db.pushToFirebase(titleToPush, userID)
+    let movieObj = {
+        title: $(event.target).siblings(".title").html(),
+        image: $(event.target).siblings(".poster").html(),
+        actors: $(event.target).siblings(".actors").html(),
+        overview: $(event.target).siblings(".title").html(),
+        release: $(event.target).siblings(".release").html()
+    };
+    console.log("movieObj", movieObj);
+    // var titleToPush = _.filter(movieElementArray, {'title': movieTitle});
+    // db.pushToFirebaseArray(titleToPush, userID);//does this need a .then since it is calling a Promise?
+    db.pushToFirebase(movieObj, userID)
     .then(function(response){
-        console.log(response);
-        });
+        console.log("response from pushToFirebase", response);
+    });
 };
+
 
 $("#find-new-movies").click(function(){
 	//on button press take value of user input and search api send to getMovie
@@ -97,8 +118,8 @@ $("#find-new-movies").click(function(){
     //
     .then(function(movieData){
     	console.log("hi", movieData);
+        newMovieObj = movieData.results;
     	console.log("yo", newMovieObj);
-        newMovieObj.results = movieData.results;
         //what does newMovieObj equal now and prior to?
         getActors(newMovieObj);
     });
@@ -106,40 +127,42 @@ $("#find-new-movies").click(function(){
 
 
 
-var getActors = function(movieObj){
+var getActors = function(newMovieObj){
     var movieElementArray = [];
-    movieObj.results.forEach(function(element){
+    newMovieObj.forEach(function(element){
         movieElementArray.push(element);
         element.cast = [];
-            db.getActors(element.id)
-            .then(function(actors){
-                if(actors.cast.length > 5){
-                    for(var i=0;i<5;i++){
-                        element.cast.push(actors.cast[i]);
-                    }
-                }else if (actors.cast.length < 5){
-                    for(var j=0;j<actors.cast.length;j++){
-                        element.cast.push(actors.cast[j]);
-                    }
+        db.getActors(element.id)
+        .then(function(actors){
+            if(actors.cast.length > 5){
+                for(var i=0;i<5;i++){
+                    element.cast.push(actors.cast[i]);
                 }
-                element.starValue = 0;
-            $(".movies").append(unwatchedcardsTemplate(element));
-            });
+            }else if (actors.cast.length < 5){
+                for(var j=0;j<actors.cast.length;j++){
+                    element.cast.push(actors.cast[j]);
+                }
+            }
+            element.starValue = 0;
+        $(".movies").append(unwatchedcardsTemplate(element));
         });
-        $(document).on("click", ".add-to-watchlist", function(){
-                addToWatchList(movieElementArray, event);
     });
+    //     $(document).on("click", ".add-to-watchlist", function(){
+    //             addToWatchList(movieElementArray, event);
+    // });
 };
 
 
 $(document).on("click", '.add-to-watchlist', function(event){
 
     var userID = user.getUser();
-	db.pushToFirebaseArray(newMovieObj.id, userID);
-	db.pushToFirebase(newMovieObj, userID)
-	.then(function(response){
-		console.log(response);
-		});
+    addToWatchList(event);
+	// db.pushToFirebaseArray(newMovieObj.id, userID);
+	// db.pushToFirebase(newMovieObj, userID)
+	// .then(function(response){
+	// 	console.log("response from pushToFirebase", response);
+ //        console.log("newMovieObj", newMovieObj);
+	// 	});
 });
 
 

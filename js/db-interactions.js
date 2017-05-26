@@ -33,7 +33,7 @@ function getActors(movieID) {
 
 function pushToFirebase(movieObj, userID){
 	//movieObj should be single object not array
-	console.log("pwFB", movieObj);
+	console.log("pushToFB func", movieObj);
 	return new Promise(function(resolve, reject){
 		$.ajax({
 			url: `${firebase.getFBsettings().databaseURL}/${userID}/movies/.json`,
@@ -47,19 +47,19 @@ function pushToFirebase(movieObj, userID){
 	});
 }
 
-function pushToFirebaseArray(movieID, userID){
-	//does the same thing as above except adds to an array under the user id instead of movie
-	return new Promise(function(resolve, reject){
-		$.ajax({
-			url: `${firebase.getFBsettings().databaseURL}/${userID}/array.json`,
-			type: "POST",
-			data: JSON.stringify(movieID),
-			dataType: "json"
-		}).done(function(movieId){
-			resolve(movieId);
-		});
-	});
-}
+// function pushToFirebaseArray(movieID, userID){
+// 	//does the same thing as above except adds to an array under the user id instead of movie
+// 	return new Promise(function(resolve, reject){
+// 		$.ajax({
+// 			url: `${firebase.getFBsettings().databaseURL}/${userID}/array.json`,
+// 			type: "POST",
+// 			data: JSON.stringify(movieID),
+// 			dataType: "json"
+// 		}).done(function(movieId){
+// 			resolve(movieId);
+// 		});
+// 	});
+// }
 
 function pullWatchFromFirebase(userID){
 	return new Promise(function(resolve, reject){
@@ -102,7 +102,7 @@ module.exports = {
 	getMovie,
 	getActors,
 	pushToFirebase,
-	pushToFirebaseArray,
+	// pushToFirebaseArray,
     pullWatchFromFirebase,
     deleteWatchedMovie,
     updateStars
